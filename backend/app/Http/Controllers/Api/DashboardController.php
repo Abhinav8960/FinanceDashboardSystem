@@ -13,14 +13,15 @@ class DashboardController extends Controller
     //
     public function index()
     {
-        $users = User::orderBy('created_at', 'DESC')->get();
-        $categories = Category::orderBy('created_at', 'DESC')->get();
-        $finaancial_records = FinancialRecord::orderBy('created_at', 'DESC')->get();
+        $users = User::count();
+        $categories = Category::count();
+        $financial_records = FinancialRecord::count();
 
         return response()->json([
             'status' => true,
             'users' => $users,
-            'finaancial_records' => $finaancial_records
+            'categories' => $categories,
+            'financial_records' => $financial_records
         ]);
     }
 }

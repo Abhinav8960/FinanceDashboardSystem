@@ -1,10 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "../common/SideBar";
 import { FaMoneyBillWave, FaTags, FaUsers } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import DashboardLayout from "../common/DashboardLayout";
+import { apiUrl } from "../common/Config";
 
 const Dashboard = () => {
+  const user = JSON.parse(localStorage.getItem("ZorvynFinanceUserInfo"));
+
+  const [stats, setStats] = useState({
+    users: 0,
+    categories: 0,
+    financial_records: 0,
+  });
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/dashboard`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+            Accept: "application/json",
+          },
+        });
+        const data = await res.json();
+
+        setStats({
+          users: data.users,
+          categories: data.categories,
+          financial_records: data.financial_records,
+        });
+      } catch (error) {
+        console.error("Error fetching dashboard:", error);
+      }
+    };
+
+    fetchDashboard();
+  }, []);
   return (
     <DashboardLayout>
       {/* Content */}
@@ -14,6 +46,7 @@ const Dashboard = () => {
           <div className="col-md-4">
             <Link to="/financial-records" className="dashboard-tile">
               <FaMoneyBillWave className="tile-icon" />
+              <h4>{stats.financial_records} Records</h4>
               <h5>Financial Records</h5>
               <p>Manage transactions</p>
             </Link>
@@ -23,6 +56,7 @@ const Dashboard = () => {
           <div className="col-md-4">
             <Link to="/category" className="dashboard-tile">
               <FaTags className="tile-icon" />
+              <h4>{stats.categories} Records</h4>
               <h5>Categories</h5>
               <p>Manage categories</p>
             </Link>
@@ -32,6 +66,7 @@ const Dashboard = () => {
           <div className="col-md-4">
             <Link to="/user-management" className="dashboard-tile">
               <FaUsers className="tile-icon" />
+              <h4>{stats.users} Records</h4>
               <h5>Users</h5>
               <p>Manage users</p>
             </Link>
