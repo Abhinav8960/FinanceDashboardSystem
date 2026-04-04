@@ -1,0 +1,66 @@
+make separate folder for backend (logic and api design) and frontend for dashboard pages
+
+*****In backend folder**********************
+
+Create project with command "composer create-project laravel/laravel backend"
+
+
+=== DB DESIGN 
+Set Database config in .env file.
+
+and run default migration after creating models and migrations 
+    
+Model create command "php artisan make: model"
+
+and migration run command "php artisan migrate"
+
+“I used foreign key constraints with nullOnDelete for categories to prevent accidental data loss.”
+
+“I implemented soft deletes to prevent permanent data loss and allow recovery of financial records.”
+
+“I separated filtering logic into a dedicated search class to keep controllers clean and maintain scalability.”
+
+"I used seeders to save default data for category and user table for admin"
+
+
+===== API and AUTH DESIGN
+
+“Instead of multiple guards, I used a single authentication guard with role-based middleware for flexible and scalable access control.”
+
+Route::middleware(['auth:sanctum'])->group(function () {
+
+    // viewer allowed
+    Route::get('/dashboard', ...);
+
+    // analyst + admin
+    Route::middleware('role:analyst,admin')->group(function () {
+        Route::get('/records', ...);
+    });
+
+    // admin only
+    Route::middleware('role:admin')->group(function () {
+        Route::post('/records', ...);
+        Route::delete('/records/{id}', ...);
+    });
+});
+
+I used sanctum  auth automatically installed when run command  "php artisan install:api"
+
+create api for login and register
+
+“I implemented proper validation including password confirmation and used appropriate HTTP status codes for better API design.”
+
+json body for register 
+{
+  "name":"abhinav",
+  "email":"abinav@gmail.com",
+  "password":"1234567890",
+  "password_confirmation":"1234567890"
+}
+
+
+
+===============FRONTEND =========================
+npm create vite@latest 
+
+I used authContext to protech the pages that should not be accessed withoutlogin

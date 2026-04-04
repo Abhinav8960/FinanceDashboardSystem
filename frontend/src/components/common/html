@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+
+
+ 
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     HEADER
+════════════════════════════════ -->
+<header class="site-header">
+  <nav class="navbar navbar-expand-md container py-2">
+    <!-- Brand -->
+    <a class="navbar-brand" href="#">Nova<span>Spark</span></a>
+
+    <!-- Mobile toggle -->
+    <button class="navbar-toggler border-0" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navMenu"
+            style="filter:invert(1)">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Nav Links -->
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-md-center gap-md-2 mb-2 mb-md-0">
+        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Pricing</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
+        <li class="nav-item ms-md-3 mt-2 mt-md-0">
+          <a href="#" class="btn-header-login">Log In</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+
+<!-- ════════════════════════════════
+     MAIN — REGISTER FORM
+════════════════════════════════ -->
+<main class="main-content">
+
+</main>
+
+
+<!-- ════════════════════════════════
+     FOOTER
+════════════════════════════════ -->
+
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  /* ── Password Toggle ── */
+  function togglePwd(fieldId, iconId) {
+    const field = document.getElementById(fieldId);
+    const icon  = document.getElementById(iconId);
+    if (field.type === 'password') {
+      field.type = 'text';
+      icon.classList.replace('bi-eye', 'bi-eye-slash');
+    } else {
+      field.type = 'password';
+      icon.classList.replace('bi-eye-slash', 'bi-eye');
+    }
+  }
+
+  /* ── Basic Form Validation ── */
+  document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let valid = true;
+
+    const fields = ['fullName', 'email', 'phone', 'password', 'confirmPassword'];
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) {
+        el.classList.add('is-error');
+        valid = false;
+      } else {
+        el.classList.remove('is-error');
+      }
+    });
+
+    const pwd  = document.getElementById('password').value;
+    const cpwd = document.getElementById('confirmPassword').value;
+    if (pwd && cpwd && pwd !== cpwd) {
+      document.getElementById('confirmPassword').classList.add('is-error');
+      valid = false;
+      alert('Passwords match nahi ho rahe!');
+      return;
+    }
+
+    if (!document.getElementById('terms').checked) {
+      alert('Terms & Conditions accept karo pehle!');
+      valid = false;
+    }
+
+    if (valid) {
+      alert('🎉 Registration successful! Welcome to NovaSpark.');
+    }
+  });
+
+  /* ── Remove error on input ── */
+  document.querySelectorAll('.input-custom').forEach(el => {
+    el.addEventListener('input', () => el.classList.remove('is-error'));
+  });
+</script>
+
+</body>
+</html>
