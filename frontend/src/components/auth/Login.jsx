@@ -31,8 +31,9 @@ const Login = () => {
       .then((result) => {
         if (result.status == 200) {
           const userInfo = {
-            name: result.name,
             id: result.id,
+            name: result.name,
+            role: result.role,
             token: result.token,
           };
 

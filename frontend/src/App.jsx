@@ -13,6 +13,7 @@ import FinancialRecordUpdate from "./components/pages/financialrecord/FinancialR
 import FinancialRecordView from "./components/pages/financialrecord/FinancialRecordView";
 import { Toaster } from "react-hot-toast";
 import { RequireAuth } from "./components/auth/RequireAuth";
+import Unauthorized from "./components/pages/unauthorized";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -22,6 +23,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -38,7 +40,7 @@ function App() {
           <Route
             path="/dashboard/category"
             element={
-              <RequireAuth>
+              <RequireAuth allowedRoles={["admin", "analyst"]}>
                 <Category />
               </RequireAuth>
             }
@@ -47,7 +49,7 @@ function App() {
           <Route
             path="/dashboard/financial-records"
             element={
-              <RequireAuth>
+              <RequireAuth allowedRoles={["admin", "analyst"]}>
                 <FinancialRecord />
               </RequireAuth>
             }
@@ -55,7 +57,7 @@ function App() {
           <Route
             path="/dashboard/financial-record/create"
             element={
-              <RequireAuth>
+              <RequireAuth allowedRoles={["admin"]}>
                 <FinancialRecordCreate />
               </RequireAuth>
             }
@@ -63,7 +65,7 @@ function App() {
           <Route
             path="/dashboard/financial-record/update/1"
             element={
-              <RequireAuth>
+              <RequireAuth allowedRoles={["admin"]}>
                 <FinancialRecordUpdate />
               </RequireAuth>
             }
@@ -71,7 +73,7 @@ function App() {
           <Route
             path="/dashboard/financial-record/view/1"
             element={
-              <RequireAuth>
+              <RequireAuth allowedRoles={["admin", "analyst"]}>
                 <FinancialRecordView />
               </RequireAuth>
             }
@@ -80,7 +82,7 @@ function App() {
           <Route
             path="/dashboard/user-management"
             element={
-              <RequireAuth>
+              <RequireAuth allowedRoles={["admin"]}>
                 <UserManagement />
               </RequireAuth>
             }
@@ -88,7 +90,7 @@ function App() {
           <Route
             path="/dashboard/user-management/update/1"
             element={
-              <RequireAuth>
+              <RequireAuth allowedRoles={["admin"]}>
                 <UserUpdate />
               </RequireAuth>
             }
@@ -96,7 +98,7 @@ function App() {
           <Route
             path="/dashboard/user-management/view/1"
             element={
-              <RequireAuth>
+              <RequireAuth allowedRoles={["admin"]}>
                 <UserView />
               </RequireAuth>
             }

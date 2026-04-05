@@ -46,7 +46,7 @@ const Dashboard = () => {
           <div className="col-md-4">
             <Link to="/financial-records" className="dashboard-tile">
               <FaMoneyBillWave className="tile-icon" />
-              <h4>{stats.financial_records} Records</h4>
+              <h4>{stats.financial_records} </h4>
               <h5>Financial Records</h5>
               <p>Manage transactions</p>
             </Link>
@@ -56,7 +56,7 @@ const Dashboard = () => {
           <div className="col-md-4">
             <Link to="/category" className="dashboard-tile">
               <FaTags className="tile-icon" />
-              <h4>{stats.categories} Records</h4>
+              <h4>{stats.categories}</h4>
               <h5>Categories</h5>
               <p>Manage categories</p>
             </Link>
@@ -66,7 +66,7 @@ const Dashboard = () => {
           <div className="col-md-4">
             <Link to="/user-management" className="dashboard-tile">
               <FaUsers className="tile-icon" />
-              <h4>{stats.users} Records</h4>
+              <h4>{stats.users}</h4>
               <h5>Users</h5>
               <p>Manage users</p>
             </Link>
