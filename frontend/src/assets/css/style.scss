@@ -385,6 +385,16 @@ body::before {
   color: var(--clr-accent);
 }
 
+.input-custom {
+  background-color: #1e1e2f;
+  color: #fff;
+}
+
+.input-custom option {
+  background-color: #1e1e2f;
+  color: #fff;
+}
+
 /* ── Password toggle ── */
 .toggle-pwd {
   position: absolute;

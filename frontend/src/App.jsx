@@ -63,7 +63,7 @@ function App() {
             }
           />
           <Route
-            path="/dashboard/financial-record/update/1"
+            path="/dashboard/financial-record/update/:id"
             element={
               <RequireAuth allowedRoles={["admin"]}>
                 <FinancialRecordUpdate />
@@ -71,7 +71,7 @@ function App() {
             }
           />
           <Route
-            path="/dashboard/financial-record/view/1"
+            path="/dashboard/financial-record/view/:id"
             element={
               <RequireAuth allowedRoles={["admin", "analyst"]}>
                 <FinancialRecordView />
@@ -88,7 +88,7 @@ function App() {
             }
           />
           <Route
-            path="/dashboard/user-management/update/1"
+            path="/dashboard/user-management/update/:id"
             element={
               <RequireAuth allowedRoles={["admin"]}>
                 <UserUpdate />
@@ -96,7 +96,7 @@ function App() {
             }
           />
           <Route
-            path="/dashboard/user-management/view/1"
+            path="/dashboard/user-management/view/:id"
             element={
               <RequireAuth allowedRoles={["admin"]}>
                 <UserView />

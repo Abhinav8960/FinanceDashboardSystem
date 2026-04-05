@@ -1,23 +1,85 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../common/DashboardLayout";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { apiUrl, token } from "../../common/Config";
+import toast from "react-hot-toast";
 
 const FinancialRecordCreate = () => {
-  const [form, setForm] = useState({
-    category_id: "",
-    amount: "",
-    type: "income",
-    date: "",
-    description: "",
-    status: 1,
-  });
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const [users, setUsers] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm();
+
+  const fetchData = async () => {
+    try {
+      const [userRes, catRes] = await Promise.all([
+        fetch(`${apiUrl}/user-management`, {
+          headers: {
+            Authorization: `Bearer ${token()}`,
+          },
+        }),
+        fetch(`${apiUrl}/categories`, {
+          headers: {
+            Authorization: `Bearer ${token()}`,
+          },
+        }),
+      ]);
+
+      const userData = await userRes.json();
+      const catData = await catRes.json();
+
+      if (userData.status) setUsers(userData.data);
+      if (catData.status) setCategories(catData.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(form);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const onSubmit = async (data) => {
+    try {
+      const res = await fetch(`${apiUrl}/financial-records`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token()}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (result.status) {
+        toast.success(result.message);
+        navigate("/dashboard/financial-records");
+      } else {
+        if (result.errors) {
+          Object.keys(result.errors).forEach((field) => {
+            setError(field, {
+              type: "server",
+              message: result.errors[field][0],
+            });
+          });
+        }
+
+        toast.error(result.message || "Validation error");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.log(error);
+    }
   };
 
   return (
@@ -27,22 +89,51 @@ const FinancialRecordCreate = () => {
           <p className="card-eyebrow">Financial Records</p>
           <h3 className="card-heading mb-3">Add New Record</h3>
 
-          <form onSubmit={handleSubmit}>
-            {/* Row 1 */}
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="row g-3">
+              <div className="col-md-6">
+                <div className="form-group-custom">
+                  <label className="form-label-custom">Username</label>
+                  <select
+                    {...register("user_id", { required: "User is required" })}
+                    className={`input-custom ${errors.user_id ? "is-invalid" : ""}`}
+                  >
+                    <option value="">Select User</option>
+                    {users.map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.user_id && (
+                    <p className="text-danger small">
+                      {errors.user_id.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
               <div className="col-md-6">
                 <div className="form-group-custom">
                   <label className="form-label-custom">Category</label>
                   <select
-                    name="category_id"
-                    className="input-custom"
-                    value={form.category_id}
-                    onChange={handleChange}
+                    {...register("category_id", {
+                      required: "Category is required",
+                    })}
+                    className={`input-custom ${errors.category_id ? "is-invalid" : ""}`}
                   >
                     <option value="">Select Category</option>
-                    <option value="1">Food</option>
-                    <option value="2">Salary</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
                   </select>
+                  {errors.category_id && (
+                    <p className="text-danger small">
+                      {errors.category_id.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -51,30 +142,29 @@ const FinancialRecordCreate = () => {
                   <label className="form-label-custom">Amount</label>
                   <input
                     type="number"
-                    name="amount"
-                    className="input-custom"
-                    placeholder="Enter amount"
-                    value={form.amount}
-                    onChange={handleChange}
+                    {...register("amount", { required: "Amount is required" })}
+                    className={`input-custom ${errors.amount ? "is-invalid" : ""}`}
                   />
+                  {errors.amount && (
+                    <p className="text-danger small">{errors.amount.message}</p>
+                  )}
                 </div>
               </div>
-            </div>
 
-            {/* Row 2 */}
-            <div className="row g-3">
               <div className="col-md-6">
                 <div className="form-group-custom">
                   <label className="form-label-custom">Type</label>
                   <select
-                    name="type"
-                    className="input-custom"
-                    value={form.type}
-                    onChange={handleChange}
+                    {...register("type", { required: "Type is required" })}
+                    className={`input-custom ${errors.type ? "is-invalid" : ""}`}
                   >
+                    <option value="">Select</option>
                     <option value="income">Income</option>
                     <option value="expense">Expense</option>
                   </select>
+                  {errors.type && (
+                    <p className="text-danger small">{errors.type.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -83,48 +173,27 @@ const FinancialRecordCreate = () => {
                   <label className="form-label-custom">Date</label>
                   <input
                     type="date"
-                    name="date"
+                    {...register("date", { required: "Date is required" })}
+                    className={`input-custom ${errors.date ? "is-invalid" : ""}`}
+                  />
+                </div>
+                {errors.date && (
+                  <p className="text-danger small">{errors.date.message}</p>
+                )}
+              </div>
+
+              <div className="col-md-12">
+                <div className="form-group-custom">
+                  <label className="form-label-custom">Description</label>
+                  <textarea
+                    {...register("description")}
                     className="input-custom"
-                    value={form.date}
-                    onChange={handleChange}
                   />
                 </div>
               </div>
             </div>
 
-            {/* Row 3 */}
-            <div className="row g-3">
-              <div className="col-md-6">
-                <div className="form-group-custom">
-                  <label className="form-label-custom">Status</label>
-                  <select
-                    name="status"
-                    className="input-custom"
-                    value={form.status}
-                    onChange={handleChange}
-                  >
-                    <option value={1}>Active</option>
-                    <option value={0}>Inactive</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Description full width */}
-            <div className="form-group-custom">
-              <label className="form-label-custom">Description</label>
-              <textarea
-                name="description"
-                className="input-custom"
-                rows="3"
-                placeholder="Optional..."
-                value={form.description}
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Submit */}
-            <button type="submit" className="btn-submit-custom w-100">
+            <button type="submit" className="btn-submit-custom w-100 mt-3">
               Save Record
             </button>
           </form>
