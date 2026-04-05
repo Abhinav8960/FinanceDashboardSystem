@@ -48,7 +48,6 @@ class FinancialRecordController extends Controller
             'amount' => 'required|numeric|min:0',
             'type' => 'required|in:income,expense',
             'date' => 'required|date',
-            'description' => 'required|string|max:255',
         ]);
     }
 
