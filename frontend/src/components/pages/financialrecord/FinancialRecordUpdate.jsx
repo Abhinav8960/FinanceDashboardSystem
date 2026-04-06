@@ -108,121 +108,124 @@ const FinancialRecordUpdate = () => {
             </div>
           </div>
           <h3 className="card-heading mb-3">Edit Record</h3>
+          {loading ? (
+            <span className="highlight">Loading...</span>
+          ) : (
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="row g-3">
+                {/* USER */}
+                <div className="col-md-6">
+                  <div className="form-group-custom">
+                    <label className="form-label-custom">User</label>
+                    <select
+                      {...register("user_id", { required: "User is required" })}
+                      className={`input-custom ${errors.user_id && "is-invalid"}`}
+                    >
+                      <option value="">Select User</option>
+                      {users.map((u) => (
+                        <option key={u.id} value={u.id}>
+                          {u.name}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.user_id && (
+                      <p className="text-danger small">
+                        {errors.user_id.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="row g-3">
-              {/* USER */}
-              <div className="col-md-6">
-                <div className="form-group-custom">
-                  <label className="form-label-custom">User</label>
-                  <select
-                    {...register("user_id", { required: "User is required" })}
-                    className={`input-custom ${errors.user_id && "is-invalid"}`}
-                  >
-                    <option value="">Select User</option>
-                    {users.map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.user_id && (
-                    <p className="text-danger small">
-                      {errors.user_id.message}
-                    </p>
-                  )}
+                {/* CATEGORY */}
+                <div className="col-md-6">
+                  <div className="form-group-custom">
+                    <label className="form-label-custom">Category</label>
+                    <select
+                      {...register("category_id", {
+                        required: "Category is required",
+                      })}
+                      className={`input-custom ${errors.category_id && "is-invalid"}`}
+                    >
+                      <option value="">Select Category</option>
+                      {categories.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.category_id && (
+                      <p className="text-danger small">
+                        {errors.category_id.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* AMOUNT */}
+                <div className="col-md-6">
+                  <div className="form-group-custom">
+                    <label className="form-label-custom">Amount</label>
+                    <input
+                      type="number"
+                      {...register("amount", {
+                        required: "Amount is required",
+                      })}
+                      className={`input-custom ${errors.amount && "is-invalid"}`}
+                    />
+                  </div>
+                </div>
+
+                {/* TYPE */}
+                <div className="col-md-6">
+                  <div className="form-group-custom">
+                    <label className="form-label-custom">Type</label>
+                    <select {...register("type")} className="input-custom">
+                      <option value="income">Income</option>
+                      <option value="expense">Expense</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* DATE */}
+                <div className="col-md-6">
+                  <div className="form-group-custom">
+                    <label className="form-label-custom">Date</label>
+                    <input
+                      type="date"
+                      {...register("date")}
+                      className="input-custom"
+                    />
+                  </div>
+                </div>
+
+                {/* STATUS */}
+                <div className="col-md-6">
+                  <div className="form-group-custom">
+                    <label className="form-label-custom">Status</label>
+                    <select {...register("status")} className="input-custom">
+                      <option value={1}>Active</option>
+                      <option value={0}>Inactive</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* DESCRIPTION */}
+                <div className="col-md-12">
+                  <div className="form-group-custom">
+                    <label className="form-label-custom">Description</label>
+                    <textarea
+                      {...register("description")}
+                      className="input-custom"
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* CATEGORY */}
-              <div className="col-md-6">
-                <div className="form-group-custom">
-                  <label className="form-label-custom">Category</label>
-                  <select
-                    {...register("category_id", {
-                      required: "Category is required",
-                    })}
-                    className={`input-custom ${errors.category_id && "is-invalid"}`}
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.category_id && (
-                    <p className="text-danger small">
-                      {errors.category_id.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* AMOUNT */}
-              <div className="col-md-6">
-                <div className="form-group-custom">
-                  <label className="form-label-custom">Amount</label>
-                  <input
-                    type="number"
-                    {...register("amount", {
-                      required: "Amount is required",
-                    })}
-                    className={`input-custom ${errors.amount && "is-invalid"}`}
-                  />
-                </div>
-              </div>
-
-              {/* TYPE */}
-              <div className="col-md-6">
-                <div className="form-group-custom">
-                  <label className="form-label-custom">Type</label>
-                  <select {...register("type")} className="input-custom">
-                    <option value="income">Income</option>
-                    <option value="expense">Expense</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* DATE */}
-              <div className="col-md-6">
-                <div className="form-group-custom">
-                  <label className="form-label-custom">Date</label>
-                  <input
-                    type="date"
-                    {...register("date")}
-                    className="input-custom"
-                  />
-                </div>
-              </div>
-
-              {/* STATUS */}
-              <div className="col-md-6">
-                <div className="form-group-custom">
-                  <label className="form-label-custom">Status</label>
-                  <select {...register("status")} className="input-custom">
-                    <option value={1}>Active</option>
-                    <option value={0}>Inactive</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* DESCRIPTION */}
-              <div className="col-md-12">
-                <div className="form-group-custom">
-                  <label className="form-label-custom">Description</label>
-                  <textarea
-                    {...register("description")}
-                    className="input-custom"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <button type="submit" className="btn-submit-custom w-100 mt-3">
-              Update Record
-            </button>
-          </form>
+              <button type="submit" className="btn-submit-custom w-100 mt-3">
+                Update Record
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </DashboardLayout>
