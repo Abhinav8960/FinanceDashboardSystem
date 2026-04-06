@@ -151,7 +151,7 @@ const FinancialRecord = () => {
                     records.map((record, index) => {
                       return (
                         <tr key={record.id}>
-                          <td>{index + 1}</td>
+                          <td>{(page - 1) * 10 + index + 1}</td>
                           <td>{record.user?.name}</td>
                           <td>{record.category?.name}</td>
                           <td>{record.amount}</td>

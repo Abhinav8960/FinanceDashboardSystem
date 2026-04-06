@@ -12,9 +12,20 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::latest()->paginate(10);
+        $query = User::query();
+
+        if ($request->name) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->status !== null && $request->status !== '') {
+            $query->where('status', $request->status);
+        }
+
+        $users = $query->latest()->paginate(10);
+
         return response()->json([
             'status' => true,
             'data' => $users->items(),
