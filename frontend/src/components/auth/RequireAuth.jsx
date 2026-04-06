@@ -10,7 +10,7 @@ export const RequireAuth = ({ children, allowedRoles }) => {
   }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return <Navigate to={`/unauthorized`} />; // or navigate to dashboard cal with toaster
+    return <Navigate to="/unauthorized" state={{ fromAuth: true }} />; // or navigate to dashboard cal with toaster
   }
 
   return children;

@@ -21,7 +21,7 @@ class RoleMiddleware
         }
 
         if (!in_array(Auth::user()->role, $roles)) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return response()->json(['message' => 'You are not authorized to perform this action'], 403);
         }
 
         return $next($request);
