@@ -1,66 +1,85 @@
-make separate folder for backend (logic and api design) and frontend for dashboard pages
+Finance Dashboard System Documentation
+========================================
 
-*****In backend folder**********************
+This project is split into two main parts:
+- `backend` for API logic, authentication, and database operations.
+- `frontend` for the dashboard user interface and protected pages.
 
-Create project with command "composer create-project laravel/laravel backend"
+Backend Setup
+-------------
+1. Create the Laravel project in the `backend` folder:
+   - `composer create-project laravel/laravel backend`
+2. Configure the database in `.env`.
+3. Create models and migrations as needed.
+   - Example: `php artisan make:model FinancialRecord -m`
+4. Run migrations:
+   - `php artisan migrate`
 
+Database Design
+---------------
+- Use foreign key constraints with `nullOnDelete` for category relationships to avoid accidental data loss.
+- Use soft deletes on financial records to allow recovery and avoid permanent deletion.
+- Separate filtering/search logic into a dedicated search class or service for cleaner controllers and better scalability.
+- Use seeders to insert default data for categories and admin users.
 
-=== DB DESIGN 
-Set Database config in .env file.
+API and Authentication
+----------------------
+- Use Laravel Sanctum for API authentication.
+- Use a single authentication guard with role-based middleware.
+- Protect API routes based on user roles:
+  - Authenticated users can access dashboard overview.
+  - `analyst` and `admin` can access financial records and category listing.
+  - `admin` can create, update, delete records and manage users.
 
-and run default migration after creating models and migrations 
-    
-Model create command "php artisan make: model"
+Example route structure:
 
-and migration run command "php artisan migrate"
-
-“I used foreign key constraints with nullOnDelete for categories to prevent accidental data loss.”
-
-“I implemented soft deletes to prevent permanent data loss and allow recovery of financial records.”
-
-“I separated filtering logic into a dedicated search class to keep controllers clean and maintain scalability.”
-
-"I used seeders to save default data for category and user table for admin"
-
-
-===== API and AUTH DESIGN
-
-“Instead of multiple guards, I used a single authentication guard with role-based middleware for flexible and scalable access control.”
-
-Route::middleware(['auth:sanctum'])->group(function () {
-
-    // viewer allowed
-    Route::get('/dashboard', ...);
-
-    // analyst + admin
-    Route::middleware('role:analyst,admin')->group(function () {
-        Route::get('/records', ...);
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('/dashboard', ...);
     });
 
-    // admin only
-    Route::middleware('role:admin')->group(function () {
-        Route::post('/records', ...);
-        Route::delete('/records/{id}', ...);
+    Route::middleware(['auth:sanctum', 'role:analyst,admin'])->group(function () {
+        Route::get('/financial-records', ...);
+        Route::get('/financial-records/{id}', ...);
+        Route::get('/categories', ...);
     });
-});
 
-I used sanctum  auth automatically installed when run command  "php artisan install:api"
+    Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+        Route::post('/financial-records', ...);
+        Route::put('/financial-records/{id}', ...);
+        Route::delete('/financial-records/{id}', ...);
+        Route::get('/user-management', ...);
+        Route::put('/user-management/{id}', ...);
+        Route::delete('/user-management/{id}', ...);
+    });
 
-create api for login and register
+Authentication API
+------------------
+- `POST /api/register` to create a new user.
+- `POST /api/login` to log in.
 
-“I implemented proper validation including password confirmation and used appropriate HTTP status codes for better API design.”
+Example registration body:
 
-json body for register 
-{
-  "name":"abhinav",
-  "email":"abinav@gmail.com",
-  "password":"1234567890",
-  "password_confirmation":"1234567890"
-}
+    {
+      "name": "abhinav",
+      "email": "abhinav@gmail.com",
+      "password": "1234567890",
+      "password_confirmation": "1234567890"
+    }
 
+- Validate input properly and use appropriate HTTP status codes.
 
+Frontend Setup
+--------------
+1. Create the React project using Vite in the `frontend` folder:
+   - `npm create vite@latest`
+2. Install dependencies:
+   - `npm install`
+3. Use `AuthContext` to protect pages that require login.
+4. Protect routes based on user role and authentication status.
 
-===============FRONTEND =========================
-npm create vite@latest 
+Frontend Notes
+--------------
+- Pages like `/dashboard` should be protected with authentication.
+- Role-based access should be enforced in the frontend for admin, analyst, and viewer roles.
 
-I used authContext to protech the pages that should not be accessed withoutlogin
+This documentation is intended to help understand the project structure, setup, and main implementation details.
