@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\FinancialRecord;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -13,7 +15,11 @@ class FinancialRecordController extends Controller
     //
     public function index()
     {
-        $financial_records = FinancialRecord::latest()->paginate(10);
+        $financial_records = FinancialRecord::with([
+            'user:id,name',
+            'category:id,name'
+        ])->latest()->paginate(10);
+
         return response()->json([
             'status' => true,
             'data' => $financial_records->items(),
@@ -34,9 +40,20 @@ class FinancialRecordController extends Controller
                 'message' => "Record not found!"
             ]);
         }
+
+        $users = User::select('id', 'name')->get();
+        $categories = Category::select('id', 'name')->get();
+
+        $financial_record->load([
+            'user:id,name',
+            'category:id,name'
+        ]);
+
         return response()->json([
             'status' => true,
-            'data' => $financial_record
+            'data' => $financial_record,
+            'users' => $users,
+            'categories' =>  $categories
         ]);
     }
 
@@ -105,12 +122,19 @@ class FinancialRecordController extends Controller
         $record->type = $request->type;
         $record->date = $request->date;
         $record->description = $request->description;
+        $record->status = $request->status;
         $record->save();
+
+        $record->load([
+            'user:id,name',
+            'category:id,name'
+        ]);
 
         return response()->json([
             'status' => true,
             'message' => 'Financial Record Updated Successfully',
-            'data' => $record
+            'data' => $record,
+
         ], 200);
     }
 

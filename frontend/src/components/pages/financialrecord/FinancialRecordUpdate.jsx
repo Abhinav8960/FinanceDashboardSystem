@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../common/DashboardLayout";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { apiUrl, token } from "../../common/Config";
 import toast from "react-hot-toast";
-import Select from "react-select";
 
 const FinancialRecordUpdate = () => {
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { id } = useParams();
-
-  const [users, setUsers] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -22,65 +18,44 @@ const FinancialRecordUpdate = () => {
     setError,
   } = useForm();
 
-  // ✅ dropdown options
-  const userOptions = users.map((u) => ({
-    value: u.id,
-    label: u.name,
-  }));
+  const [users, setUsers] = useState([]);
+  const [categories, setCategories] = useState([]);
 
-  const categoryOptions = categories.map((c) => ({
-    value: c.id,
-    label: c.name,
-  }));
-
-  // ✅ fetch all data (users + categories + record)
   const fetchData = async () => {
+    setLoading(true);
     try {
-      const [userRes, catRes, recordRes] = await Promise.all([
-        fetch(`${apiUrl}/user-management`, {
-          headers: { Authorization: `Bearer ${token()}` },
-        }),
-        fetch(`${apiUrl}/categories`, {
-          headers: { Authorization: `Bearer ${token()}` },
-        }),
-        fetch(`${apiUrl}/financial-records/${id}`, {
-          headers: { Authorization: `Bearer ${token()}` },
-        }),
-      ]);
+      const res = await fetch(`${apiUrl}/financial-records/${id}`, {
+        headers: { Authorization: `Bearer ${token()}` },
+      });
 
-      const userData = await userRes.json();
-      const catData = await catRes.json();
-      const recordData = await recordRes.json();
+      const result = await res.json();
 
-      if (userData.status) setUsers(userData.data);
-      if (catData.status) setCategories(catData.data);
+      if (result.status) {
+        const r = result.data;
 
-      // ✅ set default values
-      if (recordData.status) {
-        const r = recordData.data;
+        setUsers(result.users);
+        setCategories(result.categories);
 
         setValue("user_id", r.user_id);
         setValue("category_id", r.category_id);
         setValue("amount", r.amount);
         setValue("type", r.type);
-        setValue("date", r.date);
+        setValue("date", r.date?.split("T")[0]);
         setValue("status", r.status);
         setValue("description", r.description);
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
-
-    // register for react-select
-    register("user_id", { required: "User is required" });
-    register("category_id", { required: "Category is required" });
   }, []);
 
-  // ✅ UPDATE API
   const onSubmit = async (data) => {
     try {
       const res = await fetch(`${apiUrl}/financial-records/${id}`, {
@@ -107,7 +82,6 @@ const FinancialRecordUpdate = () => {
             });
           });
         }
-
         toast.error(result.message || "Validation error");
       }
     } catch (error) {
@@ -120,82 +94,128 @@ const FinancialRecordUpdate = () => {
     <DashboardLayout>
       <div className="col-lg-9">
         <div className="content-card">
-          <p className="card-eyebrow">Financial Records</p>
+          <div className="d-flex justify-content-between align-items-center">
+            <p className="card-eyebrow">Financial Records</p>
+
+            <div>
+              <Link
+                to={`/dashboard/financial-records`}
+                className="btn-social-custom text-decoration-none"
+                style={{ color: "var(--clr-accent)" }}
+              >
+                Back
+              </Link>
+            </div>
+          </div>
           <h3 className="card-heading mb-3">Edit Record</h3>
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="row g-3">
               {/* USER */}
               <div className="col-md-6">
-                <label className="form-label-custom">User</label>
-                <Select
-                  options={userOptions}
-                  onChange={(val) => setValue("user_id", val.value)}
-                />
-                {errors.user_id && (
-                  <p className="text-danger small">{errors.user_id.message}</p>
-                )}
+                <div className="form-group-custom">
+                  <label className="form-label-custom">User</label>
+                  <select
+                    {...register("user_id", { required: "User is required" })}
+                    className={`input-custom ${errors.user_id && "is-invalid"}`}
+                  >
+                    <option value="">Select User</option>
+                    {users.map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.user_id && (
+                    <p className="text-danger small">
+                      {errors.user_id.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* CATEGORY */}
               <div className="col-md-6">
-                <label className="form-label-custom">Category</label>
-                <Select
-                  options={categoryOptions}
-                  onChange={(val) => setValue("category_id", val.value)}
-                />
-                {errors.category_id && (
-                  <p className="text-danger small">
-                    {errors.category_id.message}
-                  </p>
-                )}
+                <div className="form-group-custom">
+                  <label className="form-label-custom">Category</label>
+                  <select
+                    {...register("category_id", {
+                      required: "Category is required",
+                    })}
+                    className={`input-custom ${errors.category_id && "is-invalid"}`}
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.category_id && (
+                    <p className="text-danger small">
+                      {errors.category_id.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* AMOUNT */}
               <div className="col-md-6">
-                <label className="form-label-custom">Amount</label>
-                <input
-                  type="number"
-                  {...register("amount", { required: "Amount is required" })}
-                  className={`input-custom ${errors.amount && "is-invalid"}`}
-                />
+                <div className="form-group-custom">
+                  <label className="form-label-custom">Amount</label>
+                  <input
+                    type="number"
+                    {...register("amount", {
+                      required: "Amount is required",
+                    })}
+                    className={`input-custom ${errors.amount && "is-invalid"}`}
+                  />
+                </div>
               </div>
 
               {/* TYPE */}
               <div className="col-md-6">
-                <label className="form-label-custom">Type</label>
-                <select {...register("type")} className="input-custom">
-                  <option value="income">Income</option>
-                  <option value="expense">Expense</option>
-                </select>
+                <div className="form-group-custom">
+                  <label className="form-label-custom">Type</label>
+                  <select {...register("type")} className="input-custom">
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                  </select>
+                </div>
               </div>
 
               {/* DATE */}
               <div className="col-md-6">
-                <label className="form-label-custom">Date</label>
-                <input
-                  type="date"
-                  {...register("date")}
-                  className="input-custom"
-                />
+                <div className="form-group-custom">
+                  <label className="form-label-custom">Date</label>
+                  <input
+                    type="date"
+                    {...register("date")}
+                    className="input-custom"
+                  />
+                </div>
               </div>
 
               {/* STATUS */}
               <div className="col-md-6">
-                <label className="form-label-custom">Status</label>
-                <select {...register("status")} className="input-custom">
-                  <option value={1}>Active</option>
-                  <option value={0}>Inactive</option>
-                </select>
+                <div className="form-group-custom">
+                  <label className="form-label-custom">Status</label>
+                  <select {...register("status")} className="input-custom">
+                    <option value={1}>Active</option>
+                    <option value={0}>Inactive</option>
+                  </select>
+                </div>
               </div>
 
               {/* DESCRIPTION */}
               <div className="col-md-12">
-                <label className="form-label-custom">Description</label>
-                <textarea
-                  {...register("description")}
-                  className="input-custom"
-                />
+                <div className="form-group-custom">
+                  <label className="form-label-custom">Description</label>
+                  <textarea
+                    {...register("description")}
+                    className="input-custom"
+                  />
+                </div>
               </div>
             </div>
 
