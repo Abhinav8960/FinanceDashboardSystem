@@ -13,6 +13,7 @@ const SideBar = () => {
         <li>
           <NavLink
             to="/dashboard"
+            end
             className={({ isActive }) =>
               `sidebar-link ${isActive ? "active" : ""}`
             }
@@ -67,10 +68,10 @@ const SideBar = () => {
         )}
 
         <li>
-          <NavLink onClick={logout} className="sidebar-link logout">
+          <button onClick={logout} className="sidebar-link logout btn-reset">
             <MdLogout className="sidebar-icon" />
             Logout
-          </NavLink>
+          </button>
         </li>
       </ul>
     </div>

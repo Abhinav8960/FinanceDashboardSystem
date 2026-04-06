@@ -13,7 +13,7 @@ import FinancialRecordUpdate from "./components/pages/financialrecord/FinancialR
 import FinancialRecordView from "./components/pages/financialrecord/FinancialRecordView";
 import { Toaster } from "react-hot-toast";
 import { RequireAuth } from "./components/auth/RequireAuth";
-import Unauthorized from "./components/pages/unauthorized";
+import Unauthorized from "./components/pages/Unauthorized";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -55,7 +55,7 @@ function App() {
             }
           />
           <Route
-            path="/dashboard/financial-record/create"
+            path="/dashboard/financial-records/create"
             element={
               <RequireAuth allowedRoles={["admin"]}>
                 <FinancialRecordCreate />
@@ -63,7 +63,7 @@ function App() {
             }
           />
           <Route
-            path="/dashboard/financial-record/update/:id"
+            path="/dashboard/financial-records/update/:id"
             element={
               <RequireAuth allowedRoles={["admin"]}>
                 <FinancialRecordUpdate />
@@ -71,7 +71,7 @@ function App() {
             }
           />
           <Route
-            path="/dashboard/financial-record/view/:id"
+            path="/dashboard/financial-records/view/:id"
             element={
               <RequireAuth allowedRoles={["admin", "analyst"]}>
                 <FinancialRecordView />

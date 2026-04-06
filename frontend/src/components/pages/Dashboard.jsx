@@ -44,7 +44,7 @@ const Dashboard = () => {
         <div className="row">
           {/* Financial Records */}
           <div className="col-md-4">
-            <Link to="/financial-records" className="dashboard-tile">
+            <Link to="/dashboard/financial-records" className="dashboard-tile">
               <FaMoneyBillWave className="tile-icon" />
               <h4>{stats.financial_records} </h4>
               <h5>Financial Records</h5>
@@ -54,7 +54,7 @@ const Dashboard = () => {
 
           {/* Categories */}
           <div className="col-md-4">
-            <Link to="/category" className="dashboard-tile">
+            <Link to="/dashboard/category" className="dashboard-tile">
               <FaTags className="tile-icon" />
               <h4>{stats.categories}</h4>
               <h5>Categories</h5>
@@ -64,7 +64,7 @@ const Dashboard = () => {
 
           {/* Users */}
           <div className="col-md-4">
-            <Link to="/user-management" className="dashboard-tile">
+            <Link to="/dashboard/user-management" className="dashboard-tile">
               <FaUsers className="tile-icon" />
               <h4>{stats.users}</h4>
               <h5>Users</h5>

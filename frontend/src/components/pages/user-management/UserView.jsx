@@ -44,7 +44,7 @@ const UserView = () => {
           <div className="d-flex justify-content-between align-items-center">
             <p className="card-eyebrow">User Management</p>
 
-            <div className="d-flex align-items-right gap-2">
+            <div className="d-flex align-items-end gap-2">
               <div>
                 <Link
                   to={`/dashboard/user-management`}

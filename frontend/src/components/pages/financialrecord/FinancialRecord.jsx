@@ -83,7 +83,7 @@ const FinancialRecord = () => {
 
             <div>
               <Link
-                to={`/dashboard/financial-record/create`}
+                to={`/dashboard/financial-records/create`}
                 className="btn-social-custom text-decoration-none"
                 style={{ color: "var(--clr-accent)" }}
               >
@@ -165,14 +165,14 @@ const FinancialRecord = () => {
                           </td>
                           <td className="d-flex gap-2">
                             <Link
-                              to={`/dashboard/financial-record/view/${record.id}`}
+                              to={`/dashboard/financial-records/view/${record.id}`}
                               className="action-btn view"
                             >
                               <FaEye />
                             </Link>
 
                             <Link
-                              to={`/dashboard/financial-record/update/${record.id}`}
+                              to={`/dashboard/financial-records/update/${record.id}`}
                               className="action-btn edit"
                             >
                               <FaEdit />

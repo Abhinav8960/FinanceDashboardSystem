@@ -662,3 +662,13 @@ body::before {
   font-size: 0.9rem;
   color: var(--clr-text);
 }
+.btn-reset {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}

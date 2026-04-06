@@ -12,9 +12,9 @@ const Unauthorized = () => {
       toast.error("You are not authorized to perform this action");
     }
 
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1500);
+    // setTimeout(() => {
+    //   navigate("/dashboard");
+    // }, 1500);
   }, []);
 
   return (
@@ -22,7 +22,16 @@ const Unauthorized = () => {
       <div className="col-lg-9">
         <div className="content-card text-center">
           <h3 className="text-danger">403 - Unauthorized</h3>
-          <p>You do not have permission to access this page.</p>
+          <p className="text-white">
+            You do not have permission to access this page.
+          </p>
+
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="btn btn-sm btn-outline-light mt-2"
+          >
+            Go to Dashboard
+          </button>
         </div>
       </div>
     </DashboardLayout>

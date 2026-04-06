@@ -44,7 +44,7 @@ const FinancialRecordView = () => {
           <div className="d-flex justify-content-between align-items-center">
             <p className="card-eyebrow">Financial Records</p>
 
-            <div className="d-flex align-items-right gap-2">
+            <div className="d-flex align-items-end gap-2">
               <div>
                 <Link
                   to={`/dashboard/financial-records`}
@@ -57,7 +57,7 @@ const FinancialRecordView = () => {
               <div>
                 {record && (
                   <Link
-                    to={`/dashboard/financial-record/update/${record.id}`}
+                    to={`/dashboard/financial-records/update/${record.id}`}
                     className="btn-social-custom text-decoration-none"
                     style={{ color: "var(--clr-accent)" }}
                   >

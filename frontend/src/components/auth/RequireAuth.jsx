@@ -5,12 +5,15 @@ import { AuthContext } from "./AuthContext";
 export const RequireAuth = ({ children, allowedRoles }) => {
   const { user } = useContext(AuthContext);
 
+  console.log("User Role:", user.role);
+  console.log("Allowed Roles:", allowedRoles);
+
   if (!user || !user.token) {
     return <Navigate to={`/login`} />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/unauthorized" state={{ fromAuth: true }} />; // or navigate to dashboard cal with toaster
+  if (allowedRoles && !allowedRoles.includes(user.role?.toLowerCase())) {
+    return <Navigate to="/unauthorized" state={{ fromAuth: true }} />;
   }
 
   return children;
