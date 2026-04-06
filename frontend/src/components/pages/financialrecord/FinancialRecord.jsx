@@ -9,23 +9,34 @@ const FinancialRecord = () => {
   const [records, setRecord] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+
+  // filter
+  const [type, setType] = useState("");
+  const [status, setStatus] = useState("");
+
   const fetchRecords = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${apiUrl}/financial-records`, {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${token()}`,
+      const res = await fetch(
+        `${apiUrl}/financial-records?page=${page}&type=${type}&status=${status}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token()}`,
+          },
         },
-      });
+      );
       if (!res.ok) {
         throw new Error("Failed to fetch");
       }
       const result = await res.json();
       if (result.status) {
         setRecord(result.data);
+        setLastPage(result.meta.last_page);
       } else {
         toast.error(result.message);
       }
@@ -60,7 +71,7 @@ const FinancialRecord = () => {
 
   useEffect(() => {
     fetchRecords();
-  }, []);
+  }, [page, type, status]);
 
   return (
     <DashboardLayout>
@@ -79,6 +90,36 @@ const FinancialRecord = () => {
                 Create
               </Link>
             </div>
+          </div>
+
+          <div className="d-flex gap-2 mb-3">
+            {/* TYPE FILTER */}
+            <select
+              className="input-custom"
+              value={type}
+              onChange={(e) => {
+                setPage(1);
+                setType(e.target.value);
+              }}
+            >
+              <option value="">All Type</option>
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+
+            {/* STATUS FILTER */}
+            <select
+              className="input-custom"
+              value={status}
+              onChange={(e) => {
+                setPage(1);
+                setStatus(e.target.value);
+              }}
+            >
+              <option value="">All Status</option>
+              <option value="1">Active</option>
+              <option value="0">Inactive</option>
+            </select>
           </div>
 
           <div className="table-responsive">
@@ -150,6 +191,28 @@ const FinancialRecord = () => {
                 </tbody>
               </table>
             )}
+          </div>
+
+          <div className="d-flex justify-content-center gap-2 mt-3">
+            <button
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+              className="btn btn-sm btn-outline-light"
+            >
+              Prev
+            </button>
+
+            <span className="text-white align-self-center small">
+              Page {page} of {lastPage}
+            </span>
+
+            <button
+              disabled={page === lastPage}
+              onClick={() => setPage(page + 1)}
+              className="btn btn-sm btn-outline-light"
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>

@@ -13,12 +13,24 @@ use Illuminate\Support\Facades\Validator;
 class FinancialRecordController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-        $financial_records = FinancialRecord::with([
+        $query = FinancialRecord::with([
             'user:id,name',
             'category:id,name'
-        ])->latest()->paginate(10);
+        ]);
+
+        //    
+        if ($request->type) {
+            $query->where('type', $request->type);
+        }
+
+
+        if ($request->status !== null && $request->status !== '') {
+            $query->where('status', $request->status);
+        }
+
+        $financial_records = $query->latest()->paginate(10);
 
         return response()->json([
             'status' => true,
