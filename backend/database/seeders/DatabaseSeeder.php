@@ -6,29 +6,42 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Log::info('Starting DatabaseSeeder');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'role' => 'viewer',
-            'status' => 1,
-        ]);
+        User::updateOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => Hash::make('12345678'),
+                'role' => 'viewer',
+                'status' => 1,
+                'email_verified_at' => now(),
+            ]
+        );
+        Log::info('Test user created');
 
+        Log::info('Creating 30 users via factory');
+        \App\Models\User::factory(30)->create();
+        Log::info('30 users created');
 
         $this->call([
             CategorySeeder::class,
             AdminSeeder::class,
         ]);
+        Log::info('Category and Admin seeders called');
+
+        Log::info('Creating 30 financial records via factory');
+        \App\Models\FinancialRecord::factory(30)->create();
+        Log::info('30 financial records created');
+
+        Log::info('DatabaseSeeder completed');
     }
 }
